@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clip Studio – free AI image and video helper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f6;--ink:#1b2540;--mute:#5d6a8a;--card:#fff;--line:#d3d9e6;--acc:#2f4bff;--acc-ink:#fff;--warn:#b3261e}
+@media (prefers-color-scheme:dark){:root{--bg:#121829;--ink:#e8ecf8;--mute:#9aa6c6;--card:#1b2340;--line:#2d3961;--acc:#6f86ff;--acc-ink:#0d1330;--warn:#ff8a80}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.5}
+header{max-width:960px;margin:0 auto;padding:32px 20px 8px}
+h1{font-size:clamp(2rem,6vw,3.4rem);font-weight:800;letter-spacing:-.03em;margin:0;line-height:1.05}
+header p{color:var(--mute);margin:8px 0 0;max-width:60ch}
+main{max-width:960px;margin:0 auto;padding:16px 20px 60px}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0}
+nav button{font:inherit;font-weight:600;padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+nav button[aria-selected=true]{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+section{display:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px}
+section.on{display:block}
+label{display:block;font-weight:600;font-size:.9rem;margin:14px 0 4px}
+input,select,textarea{width:100%;font:inherit;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+textarea{min-height:90px;resize:vertical}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.btn{font:inherit;font-weight:600;padding:10px 18px;border-radius:8px;border:0;background:var(--acc);color:var(--acc-ink);cursor:pointer;text-decoration:none;display:inline-block}
+.btn.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.hint{color:var(--mute);font-size:.88rem;margin:6px 0 0}
+.err{color:var(--warn);font-weight:600}
+.out{margin-top:18px}
+.out img{max-width:100%;border-radius:10px;border:1px solid var(--line);display:block}
+.shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;margin-top:18px}
+.shot{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--bg)}
+.shot h3{margin:0 0 6px;font-size:1rem}
+.shot textarea{min-height:110px;font-size:.88rem}
+.shot img{width:100%;margin-top:10px;border-radius:8px}
+.models{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:10px}
+.models a{border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--ink);text-decoration:none;background:var(--bg)}
+.models a b{display:block}
+.models a span{color:var(--mute);font-size:.85rem}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Clip Studio</h1>
+  <p>Write better prompts, make images, plan shots, and send your idea to free video generators. Runs fully in your browser.</p>
+</header>
+<main>
+<nav role="tablist" aria-label="Tools">
+  <button role="tab" aria-selected="true" data-tab="helper">Prompt helper</button>
+  <button role="tab" aria-selected="false" data-tab="image">Text to image</button>
+  <button role="tab" aria-selected="false" data-tab="story">Storyboard</button>
+  <button role="tab" aria-selected="false" data-tab="video">Video</button>
+</nav>
+
+<section id="helper" class="on">
+  <label for="idea">Your idea</label>
+  <textarea id="idea" placeholder="A fisherman rows across a misty lake at sunrise"></textarea>
+  <div class="row">
+    <div><label for="shot">Shot</label><select id="shot"><option>wide establishing shot</option><option>medium shot</option><option>close-up</option><option>extreme close-up</option><option>aerial drone shot</option><option>low-angle shot</option><option>over-the-shoulder shot</option></select></div>
+    <div><label for="move">Camera movement</label><select id="move"><option>slow push-in</option><option>static tripod</option><option>smooth tracking shot</option><option>handheld</option><option>slow pan left to right</option><option>orbiting around the subject</option><option>crane up</option></select></div>
+    <div><label for="light">Lighting</label><select id="light"><option>golden hour sunlight</option><option>soft diffused daylight</option><option>moody low-key lighting</option><option>neon night glow</option><option>blue hour twilight</option><option>studio softbox lighting</option></select></div>
+    <div><label for="style">Style</label><select id="style"><option>cinematic, 35mm film look</option><option>photorealistic, ultra detailed</option><option>anime style</option><option>3D animation, Pixar-like</option><option>watercolor illustration</option><option>retro VHS footage</option><option>documentary style</option></select></div>
+    <div><label for="mood">Mood</label><select id="mood"><option>calm and peaceful</option><option>epic and dramatic</option><option>mysterious</option><option>joyful and warm</option><option>tense and suspenseful</option><option>nostalgic</option></select></div>
+  </div>
+  <div class="actions"><button class="btn" id="build">Build prompt</button></div>
+  <label for="result">Finished prompt</label>
+  <textarea id="result" readonly></textarea>
+  <div class="actions">
+    <button class="btn alt" id="copy">Copy prompt</button>
+    <button class="btn alt" id="toImage">Use for image</button>
+    <button class="btn alt" id="toVideo">Use for video</button>
+  </div>
+  <p class="hint" id="helperMsg" aria-live="polite"></p>
+</section>
+
+<section id="image">
+  <label for="ip">Image prompt</label>
+  <textarea id="ip" placeholder="Describe the image you want"></textarea>
+  <div class="row">
+    <div><label for="size">Size</label><select id="size"><option value="1024x576">Wide 16:9</option><option value="576x1024">Tall 9:16</option><option value="1024x1024">Square 1:1</option><option value="1024x768">Photo 4:3</option></select></div>
+    <div><label for="seed">Seed (blank = random)</label><input id="seed" type="number" min="0" placeholder="random"></div>
+  </div>
+  <div class="actions"><button class="btn" id="gen">Generate image</button><button class="btn alt" id="dl" hidden>Download</button></div>
+  <p class="hint" id="imgMsg" aria-live="polite"></p>
+  <div class="out" id="imgOut"></div>
+</section>
+
+<section id="story">
+  <label for="sidea">Story idea</label>
+  <textarea id="sidea" placeholder="A lonely robot finds a flower growing in an abandoned city"></textarea>
+  <div class="row">
+    <div><label for="sn">Number of shots</label><select id="sn"><option>3</option><option selected>4</option><option>5</option><option>6</option></select></div>
+    <div><label for="sstyle">Look for every shot</label><input id="sstyle" value="cinematic, soft light, 35mm film look"></div>
+  </div>
+  <div class="actions"><button class="btn" id="plan">Plan shots</button><button class="btn alt" id="copyAll" hidden>Copy all prompts</button></div>
+  <p class="hint" id="storyMsg" aria-live="polite"></p>
+  <div class="shots" id="shots"></div>
+</section>
+
+<section id="video">
+  <label for="vp">Video prompt</label>
+  <textarea id="vp" placeholder="Paste or build a prompt, then pick a free generator below"></textarea>
+  <div class="actions"><button class="btn" id="vcopy">Copy prompt</button></div>
+  <p class="hint" id="vmsg" aria-live="polite"></p>
+  <h2 style="font-size:1.1rem;margin:22px 0 0">Free video generators</h2>
+  <p class="hint">These open a Hugging Face search in a new tab. Pick a Space that is running, paste your prompt, and for image to video upload your image there. Free Spaces can have queues and daily limits.</p>
+  <div class="models">
+    <a href="https://huggingface.co/spaces?q=wan+video" target="_blank" rel="noopener"><b>Wan 2.x</b><span>Text to video and image to video</span></a>
+    <a href="https://huggingface.co/spaces?q=ltx-video" target="_blank" rel="noopener"><b>LTX-Video</b><span>Fast text and image to video</span></a>
+    <a href="https://huggingface.co/spaces?q=cogvideox" target="_blank" rel="noopener"><b>CogVideoX</b><span>Text to video</span></a>
+    <a href="https://huggingface.co/spaces?q=stable+video+diffusion" target="_blank" rel="noopener"><b>Stable Video Diffusion</b><span>Image to video</span></a>
+  </div>
+  <p class="hint" style="margin-top:16px">Tip: make a still in "Text to image", then animate it with an image to video Space for the most control.</p>
+</section>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const say = (id, t, bad) => { const e = $(id); e.textContent = t; e.className = bad ? "hint err" : "hint"; };
+const copy = async (t, msgId) => {
+  try { await navigator.clipboard.writeText(t); say(msgId, "Copied."); }
+  catch { say(msgId, "Copy failed. Select the text and copy it manually.", true); }
+};
+
+// Tabs
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("nav button").forEach(x => x.setAttribute("aria-selected", x === b));
+  document.querySelectorAll("section").forEach(s => s.classList.toggle("on", s.id === b.dataset.tab));
+});
+const go = tab => document.querySelector(`nav button[data-tab=${tab}]`).click();
+
+// Prompt helper
+$("build").onclick = () => {
+  const idea = $("idea").value.trim();
+  if (!idea) return say("helperMsg", "Type your idea first.", true);
+  $("result").value = `${idea}. ${$("shot").value}, ${$("move").value}, ${$("light").value}, ${$("mood").value} mood, ${$("style").value}.`;
+  say("helperMsg", "Prompt ready.");
+};
+$("copy").onclick = () => $("result").value ? copy($("result").value, "helperMsg") : say("helperMsg", "Build a prompt first.", true);
+$("toImage").onclick = () => { if (!$("result").value) return say("helperMsg", "Build a prompt first.", true); $("ip").value = $("result").value; go("image"); };
+$("toVideo").onclick = () => { if (!$("result").value) return say("helperMsg", "Build a prompt first.", true); $("vp").value = $("result").value; go("video"); };
+
+// Image (Pollinations, free, no key)
+const imgUrl = (p, w, h, seed) => `https://image.pollinations.ai/prompt/${encodeURIComponent(p)}?width=${w}&height=${h}&seed=${seed}&nologo=true`;
+let lastImg = "";
+$("gen").onclick = () => {
+  const p = $("ip").value.trim();
+  if (!p) return say("imgMsg", "Type an image prompt first.", true);
+  const [w, h] = $("size").value.split("x");
+  const seed = $("seed").value || Math.floor(Math.random() * 1e6);
+  lastImg = imgUrl(p, w, h, seed);
+  say("imgMsg", "Generating. This can take 10 to 30 seconds.");
+  const img = new Image();
+  img.alt = p;
+  img.onload = () => { say("imgMsg", "Done."); $("dl").hidden = false; };
+  img.onerror = () => say("imgMsg", "The image service did not respond. Try again in a minute.", true);
+  img.src = lastImg;
+  $("imgOut").replaceChildren(img);
+};
+$("dl").onclick = async () => {
+  try {
+    const blob = await (await fetch(lastImg)).blob();
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = "image.png"; a.click();
+  } catch { window.open(lastImg, "_blank"); say("imgMsg", "Opened in a new tab. Right-click it to save."); }
+};
+
+// Storyboard
+const beats = [
+  ["Establishing shot", "wide establishing shot of the setting, {idea}"],
+  ["Meet the subject", "medium shot introducing the main subject, {idea}"],
+  ["Key moment", "close-up on the key action, {idea}"],
+  ["Detail", "extreme close-up on a meaningful detail, {idea}"],
+  ["Reaction", "over-the-shoulder shot showing the reaction, {idea}"],
+  ["Final shot", "slow wide final shot that resolves the story, {idea}"]
+];
+$("plan").onclick = () => {
+  const idea = $("sidea").value.trim();
+  if (!idea) return say("storyMsg", "Type your story idea first.", true);
+  const n = +$("sn").value, style = $("sstyle").value.trim();
+  const picks = n === 6 ? beats : n === 5 ? [0,1,2,4,5].map(i => beats[i]) : n === 4 ? [0,1,2,5].map(i => beats[i]) : [0,2,5].map(i => beats[i]);
+  const box = $("shots"); box.replaceChildren();
+  picks.forEach(([title, tpl], i) => {
+    const d = document.createElement("div"); d.className = "shot";
+    const h = document.createElement("h3"); h.textContent = `Shot ${i + 1}: ${title}`;
+    const t = document.createElement("textarea"); t.value = `${tpl.replace("{idea}", idea)}, ${style}`; t.setAttribute("aria-label", `Prompt for shot ${i + 1}`);
+    const b = document.createElement("button"); b.className = "btn alt"; b.textContent = "Make image";
+    const slot = document.createElement("div");
+    b.onclick = () => {
+      const im = new Image(); im.alt = title; im.src = imgUrl(t.value, 1024, 576, 100 + i);
+      im.onerror = () => { slot.textContent = "Image service did not respond. Try again."; };
+      slot.replaceChildren(im);
+    };
+    d.append(h, t, b, slot); box.append(d);
+  });
+  $("copyAll").hidden = false;
+  say("storyMsg", "Edit any prompt, then make its image.");
+};
+$("copyAll").onclick = () => copy([...document.querySelectorAll("#shots textarea")].map((t, i) => `Shot ${i + 1}: ${t.value}`).join("\n\n"), "storyMsg");
+
+// Video
+$("vcopy").onclick = () => $("vp").value.trim() ? copy($("vp").value, "vmsg") : say("vmsg", "Type or paste a prompt first.", true);
+</script>
+</body>
+</html>
